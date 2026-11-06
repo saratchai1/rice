@@ -1,5 +1,6 @@
 node_modules/
 *.log
+dist/
 .DS_Store
 qa.mjs
 *-qa.png

@@ -6,6 +6,7 @@
   "description": "Thailand rice seed processing network digital twin and maintenance command center demo",
   "scripts": {
     "start": "node server.mjs",
+    "build": "node scripts/build-static.mjs",
     "test": "node --test tests/*.test.mjs"
   },
   "engines": {

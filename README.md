@@ -18,11 +18,17 @@ Or serve the project directory with any static web server. Uses a vendored MIT-l
 
 ## Screens
 
-1. **National Command Center** — 300 demo sites across all 77 provinces; clickable schematic region hubs, synthetic condition status, priority queue, fleet KPIs and investment context.
+1. **National Command Center** — 300 demo sites across all 77 provinces; genuine WGS84 province outlines, deterministic **simulated points contained within each province**, regional filtering, synthetic condition status, priority queue, fleet KPIs and investment context. The points are **not actual plant GPS locations**.
 2. **Standard Plant 3D Twin** — orbit/zoom/select 8 asset categories; illuminated process connections, asset inspector, condition indicators, simulated moisture/energy/biomass and process alerts.
 3. **Ditto Maintenance Command Center** — nationwide regional dispatch concept; create, assign, progress and close **demo** work orders. Cases persist only in the current browser's `localStorage`; can export to CSV. Not connected to Ditto systems.
 4. **Fleet Intelligence** — asset CAPEX breakdown, country → region → site → asset → sensor data architecture, AI/copilot/field-service roadmap.
 5. **OPS Copilot** — transparent, rule-based demo responses. Not connected to a large language model or OEM data.
+
+### Thailand map boundary and marker integrity
+
+The former hand-drawn silhouette and radial regional-marker jitter have been replaced by 77 simplified Thai province polygons. All 300 display markers are generated and tested to lie inside their assigned province polygon; SVG clipping prevents marker circles from rendering beyond the national land outline. Region filters still work. The map is illustrative in its location data: no point indicates the precise location of an installed plant.
+
+Dataset attribution and reuse caveats: [GEODATA_LICENSE.md](GEODATA_LICENSE.md). The geometry is a simplified reference layer, not an authoritative demarcation for legal, engineering or cadastral decisions.
 
 ### Plant model from supplied reference (15 × 10 m)
 

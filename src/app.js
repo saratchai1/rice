@@ -1,6 +1,7 @@
 import { ASSETS, REGIONS, DEMO_SITES, DEMO_TEAMS, CAPEX_PER_SITE, NATIONAL_NOMINAL_CAPEX,
   getFleetStats, calculateDrying, makeWorkOrder, advanceWorkOrder, seedWorkOrders, WORKFLOW_LABELS } from './model.mjs';
 import { PlantScene } from './scene.js';
+import { PROVINCE_MAP, projectLocation, provinceSvgPath, generateMapPositions } from './map-geo.mjs';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -10,6 +11,7 @@ const escapeHtml = x => String(x ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;',
 const findSite = id => DEMO_SITES.find(s => s.id === id) || DEMO_SITES[0];
 const findAsset = id => ASSETS.find(a => a.id === Number(id)) || ASSETS[2];
 const STATUSES = { healthy: 'HEALTHY', warning: 'ATTENTION', critical: 'CRITICAL', offline: 'NO DATA' };
+const demoMapPositions = generateMapPositions(DEMO_SITES);
 const localKey = 'rice-atlas-demo-workorders-v1';
 const state = {
   view: 'fleet', region: 'all', selectedSiteId: 'RICE-001', assetId: 3,
@@ -72,31 +74,34 @@ function renderRegionList(){
 }
 function svgNode(name,attributes={}) {const el=document.createElementNS('http://www.w3.org/2000/svg',name);for(const [k,v] of Object.entries(attributes))el.setAttribute(k,v);return el;}
 function renderMap(){
-  const links=$('#map-links'),dots=$('#map-projects'),hubs=$('#map-hubs');
-  links.replaceChildren();dots.replaceChildren();hubs.replaceChildren();
-  const core={x:279,y:273};
-  REGIONS.forEach(r=>{
-    links.append(svgNode('path',{d:`M ${core.x} ${core.y} Q ${core.x+45} ${core.y-75} ${r.x} ${r.y}`,class:'map-line'}));
-    const groupSites=DEMO_SITES.filter(s=>s.region===r.id);
-    groupSites.forEach((site,index)=>{
-      // Schematic jitter around regional hubs, not site coordinates.
-      const angle=index*2.39996 + r.x,rad=12+Math.sqrt(index/groupSites.length)*(r.id==='central'?60:68);
-      const x=r.x+Math.cos(angle)*rad*(r.id==='south'?.45:1.15);
-      const y=r.y+Math.sin(angle)*rad*(r.id==='south'?1.2:.80);
-      const col=site.status==='critical'?'#ff8587':site.status==='warning'?'#ffcd79':site.status==='offline'?'#5a7b89':'#69d9c6';
-      const dot=svgNode('circle',{cx:x.toFixed(1),cy:y.toFixed(1),r:site.status==='critical'?'3.7':'2',fill:col,
-        opacity:state.region==='all'||state.region===site.region?'.86':'.12',class:'map-node'});
-      dot.append(svgNode('title'));dot.lastChild.textContent=`${site.id} · ${site.province} · ${STATUSES[site.status]} (DEMO)`;
-      dot.addEventListener('click',()=>selectSite(site.id));dots.append(dot);
-    });
-    const active=state.region==='all'||state.region===r.id;
-    const hub=svgNode('g',{class:'map-hub',opacity:active?1:.27});
-    hub.append(svgNode('circle',{cx:r.x,cy:r.y,r:31,fill:r.color,opacity:.08}));
-    hub.append(svgNode('circle',{cx:r.x,cy:r.y,r:22,class:'hub-circle'}));
-    const count=svgNode('text',{x:r.x,y:r.y+5,'text-anchor':'middle',class:'hub-count'});count.textContent=groupSites.length;hub.append(count);
-    const label=svgNode('text',{x:r.x,y:r.y+42,'text-anchor':'middle',class:'hub-name'});label.textContent=r.en;hub.append(label);
-    const hubTitle=svgNode('title');hubTitle.textContent=`${r.name} ${groupSites.length} โครงการ (สาธิต)`;hub.append(hubTitle);
-    hub.addEventListener('click',()=>{state.region=state.region===r.id?'all':r.id;renderRegionList();renderMap();renderPrioritySites()});hubs.append(hub);
+  const svg=$('#thailand-map'),dots=$('#map-projects');
+  if (!svg.querySelector('#real-province-outlines')) {
+    svg.querySelector('.map-land')?.remove(); // Replace the old hand-drawn schematic.
+    const land=svgNode('g',{id:'real-province-outlines','aria-hidden':'true'});
+    const clip=svgNode('clipPath',{id:'thailand-land-clip'});
+    for (const feature of PROVINCE_MAP.values()) {
+      const d=provinceSvgPath(feature);
+      land.append(svgNode('path',{d,class:'map-province',fill:'url(#mapFill)',stroke:'#4b8a8e','stroke-width':'0.65','stroke-linejoin':'round','fill-rule':'evenodd'}));
+      clip.append(svgNode('path',{d,'clip-rule':'evenodd'}));
+    }
+    svg.querySelector('defs').append(clip);
+    svg.insertBefore(land,dots);
+    svg.setAttribute('aria-label','ขอบเขตประเทศไทยและจังหวัดตาม GeoJSON จริง พร้อมจุดสาธิต 300 โครงการซึ่งอยู่ภายในขอบเขตจังหวัด');
+    dots.setAttribute('clip-path','url(#thailand-land-clip)');
+    $('.map-panel .micro-head').textContent='GEOGRAPHIC INTELLIGENCE / THAILAND ADM1';
+    $('.map-coordinates').innerHTML='THAILAND · WGS84<br><span>77 PROVINCE OUTLINES</span>';
+    $('.map-footnote').innerHTML='<span>●</span> จุดภายในจังหวัดเป็นตำแหน่งจำลอง ไม่ใช่ GPS โรงงานจริง';
+  }
+  dots.replaceChildren();
+  DEMO_SITES.forEach(site=>{
+    const point=demoMapPositions.get(site.id), {x,y}=projectLocation(point.lon,point.lat);
+    const col=site.status==='critical'?'#ff8587':site.status==='warning'?'#ffcd79':site.status==='offline'?'#5a7b89':'#69d9c6';
+    const dot=svgNode('circle',{cx:x.toFixed(2),cy:y.toFixed(2),r:site.status==='critical'?'3.3':'2',fill:col,
+      opacity:state.region==='all'||state.region===site.region?'.92':'.10',class:'map-node'});
+    dot.append(svgNode('title'));
+    dot.lastChild.textContent=`${site.id} · ${site.province} · ${STATUSES[site.status]} (ตำแหน่งจำลองภายในจังหวัด)`;
+    dot.addEventListener('click',()=>selectSite(site.id));
+    dots.append(dot);
   });
 }
 function renderPrioritySites(){
