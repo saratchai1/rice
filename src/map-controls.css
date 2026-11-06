@@ -1,0 +1,52 @@
+.map-zoom-controls {
+  position: absolute;
+  z-index: 5;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid #31535e;
+  border-radius: 10px;
+  background: rgba(5, 22, 31, .91);
+  box-shadow: 0 7px 30px rgba(0, 0, 0, .26);
+  backdrop-filter: blur(6px);
+}
+.map-zoom-controls button {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid #385e68;
+  border-radius: 6px;
+  background: #153943;
+  color: #bff3e7;
+  font-family: inherit;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+.map-zoom-controls button:hover:not(:disabled),
+.map-zoom-controls button:focus-visible {
+  background: #24606a;
+  border-color: #77dbcb;
+  outline: 2px solid transparent;
+}
+.map-zoom-controls button:disabled { opacity: .38; cursor: default; }
+#map-zoom-label {
+  display: inline-block;
+  min-width: 43px;
+  color: #9ebfc3;
+  font-family: var(--mono), monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+#thailand-map { touch-action: none; user-select: none; cursor: grab; }
+#thailand-map.is-panning { cursor: grabbing; }
+#thailand-map:focus-visible { outline: 2px solid #7bdfcd; outline-offset: -4px; }
+@media (max-width: 640px) {
+  .map-zoom-controls { top: 8px; right: 8px; gap: 3px; padding: 4px; }
+  .map-zoom-controls button { min-width: 32px; height: 32px; }
+  #map-zoom-label { min-width: 38px; }
+}

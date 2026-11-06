@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08131c">
+  <meta name="description" content="RICE ATLAS — Digital Twin / National Fleet / Ditto Maintenance Command Center. Interactive demo using synthetic telemetry and sites.">
+  <title>RICE ATLAS — National Digital Twin</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./src/map-controls.css">
+</head>
+<body>
+  <div class="screen-noise" aria-hidden="true"></div>
+  <aside class="rail" aria-label="เมนูหลัก">
+    <div class="brandmark" aria-label="RICE ATLAS"><span>R<span class="brandmark-dot">.</span></span></div>
+    <div class="rail-separator"></div>
+    <nav class="rail-links">
+      <button class="rail-link is-active" data-nav="fleet" title="National Fleet" aria-label="ภาพรวม 300 โครงการ"><span class="rail-symbol">◈</span><span class="rail-caption">FLEET</span></button>
+      <button class="rail-link" data-nav="site" title="Factory 3D" aria-label="โรงงาน 3 มิติ"><span class="rail-symbol">⬡</span><span class="rail-caption">TWIN</span></button>
+      <button class="rail-link" data-nav="maintenance" title="Maintenance" aria-label="บำรุงรักษาทั่วประเทศ"><span class="rail-symbol">✳</span><span class="rail-caption">SERVICE</span></button>
+      <button class="rail-link" data-nav="insights" title="Intelligence" aria-label="วิเคราะห์และระบบข้อมูล"><span class="rail-symbol">⌁</span><span class="rail-caption">INSIGHT</span></button>
+    </nav>
+    <div class="rail-bottom"><div class="signal-bars"><i></i><i></i><i></i></div><span>v0.1</span></div>
+  </aside>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="heading">
+        <div class="eyebrow"><span class="orb pulse"></span> NATIONAL OPERATIONS NETWORK <span class="head-divider">/</span> <span id="page-eyebrow">FLEET OVERVIEW</span></div>
+        <div class="title-row"><h1>RICE<span class="accent">//</span>ATLAS</h1><span class="title-small">DIGITAL TWIN PLATFORM</span></div>
+      </div>
+      <div class="top-actions">
+        <div class="clock-wrap"><span class="clock-label">BANGKOK · ICT</span><time id="live-clock">--:--:--</time></div>
+        <span class="pill pill-demo"><i></i> SYNTHETIC DEMO</span>
+        <button class="button button-outline" id="open-copilot"><span class="button-spark">✦</span> OPS COPILOT</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="view is-active" id="view-fleet" aria-label="Fleet Command Center">
+        <div class="section-bar">
+          <div><p class="micro-head">01 / NATIONAL COMMAND CENTER</p><h2>เครือข่ายโรงงานเมล็ดพันธุ์ข้าวทั่วประเทศ <span class="title-muted">/ 300 sites</span></h2></div>
+          <div class="section-actions"><span class="state-note"><span class="blip"></span> FLEET SIMULATION ACTIVE</span><button class="button button-primary" id="open-site-primary">EXPLORE 3D TWIN <span>↗</span></button></div>
+        </div>
+        <div class="kpi-grid" id="fleet-kpis"></div>
+
+        <div class="fleet-main-grid">
+          <section class="panel map-panel">
+            <div class="panel-header"><div><p class="micro-head">GEOGRAPHIC INTELLIGENCE / DEMO SCHEMATIC</p><h3>Thailand Operations Map</h3></div><div class="map-legend"><span><i class="key good"></i> Normal</span><span><i class="key warn"></i> Attention</span><span><i class="key bad"></i> Critical</span></div></div>
+            <div class="map-stage">
+              <div class="map-zoom-controls" role="group" aria-label="ควบคุมการซูมแผนที่ประเทศไทย">
+                <button id="map-zoom-in" type="button" aria-label="ซูมเข้า" title="ซูมเข้า">+</button>
+                <button id="map-zoom-out" type="button" aria-label="ซูมออก" title="ซูมออก">−</button>
+                <button id="map-zoom-reset" type="button" aria-label="ดูประเทศไทยทั้งประเทศ" title="กลับมุมมองทั้งประเทศ">⌖</button>
+                <span id="map-zoom-label" aria-live="polite">100%</span>
+              </div>
+              <div class="map-coordinates">18° 47′ N<br>98° 59′ E<br><span>REGIONAL SCHEMATIC</span></div>
+              <svg id="thailand-map" viewBox="0 0 580 525" role="img" aria-label="ภาพแผนผังภูมิภาคประเทศไทยและจุดโครงการจำลอง 300 แห่ง">
+                <defs>
+                  <linearGradient id="mapFill" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#204b53" stop-opacity=".78"/><stop offset="1" stop-color="#0b2a37" stop-opacity=".78"/></linearGradient>
+                  <filter id="mapGlow"><feGaussianBlur stdDeviation="7"/></filter>
+                  <pattern id="mapGrid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0 H0 V24" fill="none" stroke="#385565" stroke-width=".5" opacity=".45"/></pattern>
+                </defs>
+                <rect width="580" height="525" fill="url(#mapGrid)" opacity=".5"/>
+                <g class="map-land" aria-hidden="true"><path d="M168 47 L195 62 L216 54 L233 66 L248 51 L269 68 L294 69 L311 102 L299 124 L328 139 L349 121 L380 130 L397 157 L422 178 L410 197 L385 199 L392 220 L376 238 L358 252 L371 267 L388 287 L372 307 L355 313 L352 333 L330 333 L316 306 L295 294 L280 304 L270 321 L251 330 L235 352 L218 343 L208 323 L190 307 L184 284 L174 271 L174 249 L165 233 L155 199 L170 174 L149 146 L138 121 L151 91 Z M222 342 L244 356 L246 383 L257 403 L253 428 L267 448 L263 470 L249 488 L235 477 L239 452 L226 427 L220 398 L211 375 Z" fill="url(#mapFill)" stroke="#45858a" stroke-width="1.3"/><path d="M168 47 L195 62 L216 54 L233 66 L248 51 L269 68 L294 69 L311 102 L299 124 L328 139 L349 121 L380 130 L397 157 L422 178 L410 197 L385 199 L392 220 L376 238 L358 252 L371 267 L388 287 L372 307 L355 313 L352 333 L330 333 L316 306 L295 294 L280 304 L270 321 L251 330 L235 352 L218 343 L208 323 L190 307 L184 284 L174 271 L174 249 L165 233 L155 199 L170 174 L149 146 L138 121 L151 91 Z M222 342 L244 356 L246 383 L257 403 L253 428 L267 448 L263 470 L249 488 L235 477 L239 452 L226 427 L220 398 L211 375 Z" fill="none" stroke="#5fd5c5" stroke-opacity=".22" stroke-width="11" filter="url(#mapGlow)"/></g>
+                <g id="map-links"></g><g id="map-projects"></g><g id="map-hubs"></g>
+              </svg>
+              <div class="map-footnote"><span>●</span> ตำแหน่งจุดเป็นภาพสาธิตระดับภูมิภาค ไม่ใช่พิกัดโครงการจริง</div>
+            </div>
+            <div class="map-footer"><div><span class="small-muted">NETWORK FOOTPRINT</span><strong>77 <small>PROVINCES</small></strong></div><div><span class="small-muted">STANDARD ASSETS</span><strong>8 <small>/ SITE</small></strong></div><div><span class="small-muted">NATIONAL CAPEX*</span><strong>฿3.54 <small>BILLION</small></strong></div><button class="ghost-link" id="map-open-maintenance">MAINTENANCE NETWORK ↗</button></div>
+          </section>
+
+          <div class="fleet-sidebar">
+            <section class="panel coverage-panel"><div class="panel-header compact"><div><p class="micro-head">FILTER / COVERAGE</p><h3>Regional Network</h3></div><span class="panel-metric" id="region-count">06</span></div><div id="region-list" class="region-list"></div></section>
+            <section class="panel queue-panel"><div class="panel-header compact"><div><p class="micro-head">PRIORITY SIGNALS</p><h3>Sites requiring attention</h3></div><span class="live-dot"></span></div><div id="priority-sites" class="priority-sites"></div></section>
+          </div>
+        </div>
+
+        <div class="bottom-grid fleet-bottom">
+          <section class="panel story-panel"><div class="panel-header compact"><div><p class="micro-head">WHY IT MATTERS</p><h3>From 300 factories to one intelligent network.</h3></div><span class="ai-chip">STRATEGIC CONCEPT</span></div><div class="story-grid"><div><span class="story-icon">◉</span><strong>One operating picture</strong><p>รู้สถานะเครื่องและผลผลิตทุกแห่งบนจอเดียว</p></div><div><span class="story-icon">✳</span><strong>Ditto service dispatch</strong><p>แจ้งซ่อมจาก Asset Twin ตรงสู่ทีมช่างภูมิภาค</p></div><div><span class="story-icon">✦</span><strong>Fleet intelligence</strong><p>เปรียบเทียบไซต์ คาดการณ์ความเสี่ยงและต้นทุน</p></div></div></section>
+          <section class="panel service-teaser"><div class="service-head"><span class="micro-head">MAINTENANCE-AS-A-SERVICE</span><span class="service-flare">✳</span></div><h3>Fix before failure.</h3><p>จากอาการผิดปกติ → ใบงาน → มอบหมายทีมช่าง → ปิดงานพร้อมประวัติสินทรัพย์</p><button class="button button-secondary" id="service-teaser-button">OPEN DITTO SERVICE HUB ↗</button></section>
+        </div>
+      </section>
+
+      <section class="view" id="view-site" aria-label="Interactive Plant Twin">
+        <div class="section-bar"><div><p class="micro-head">02 / STANDARD PLANT DIGITAL TWIN</p><h2 id="site-heading">RICE-001 <span class="title-muted">/ Interactive 3D Factory</span></h2></div><div class="section-actions"><label class="site-picker-label" for="site-picker">ACTIVE FACILITY</label><select id="site-picker" class="select-dark"></select><button class="button button-outline" id="site-new-wo">+ เปิดใบงานซ่อม</button></div></div>
+        <div class="site-top-kpis" id="site-kpis"></div>
+        <div class="site-grid">
+          <section class="panel asset-list-panel"><div class="panel-header compact"><div><p class="micro-head">PHYSICAL ASSET LAYER</p><h3>Equipment Registry</h3></div><span class="panel-metric">08</span></div><div id="asset-list" class="asset-list"></div><div class="asset-footer"><span class="blip"></span> CLICK AN ASSET TO INSPECT</div></section>
+          <section class="panel twin-panel"><div class="twin-stage-top"><div><span class="micro-head">LIVE SCENE / ENGINEERING CONCEPT</span><h3>Plant <span class="accent">01</span> · Isometric 3D</h3></div><div class="scene-controls"><button id="toggle-flow" class="tool-btn active" title="แสดงการไหลของข้าว">FLOW</button><button id="toggle-heat" class="tool-btn" title="เปิดภาพอุณหภูมิจำลอง">THERMAL</button><button id="view-source-reference" class="tool-btn" title="ดูภาพต้นฉบับ">SOURCE ↗</button><button id="reset-camera" class="tool-btn icon-tool" title="กลับมุมมองเริ่มต้น">⟳</button></div></div><div class="canvas-wrap" id="canvas-wrap"><canvas id="twin-canvas" aria-label="3D digital twin of the rice seed processing plant" tabindex="0"></canvas><div class="scene-hint">DRAG TO ROTATE <b>·</b> SCROLL TO ZOOM <b>·</b> CLICK EQUIPMENT</div><div class="scene-legend"><span><i class="key good"></i> Healthy</span><span><i class="key warn"></i> Observe</span><span><i class="key bad"></i> Alert</span></div><div id="scene-tooltip" class="scene-tooltip" hidden></div><div class="scene-dimensions">SITE TYPE-A <span>15m × 10m</span></div></div><div class="process-strip" id="process-strip"></div></section>
+          <section class="panel inspector-panel"><div class="panel-header compact"><div><p class="micro-head">CONTEXTUAL INTELLIGENCE</p><h3>Asset Inspector</h3></div><span class="inspector-signal">● CONNECTED*</span></div><div id="asset-inspector"></div></section>
+        </div>
+        <div class="site-bottom-grid">
+          <section class="panel simulator-panel"><div class="panel-header"><div><p class="micro-head">WHAT-IF / OPERATIONS LAB</p><h3>Drying & Energy Simulator</h3></div><span class="ai-chip">MASS BALANCE MODEL</span></div><div class="scenario-select"><button data-scenario="normal" class="scenario active">STANDARD</button><button data-scenario="wet" class="scenario">WET HARVEST</button><button data-scenario="alarm" class="scenario">DRYER ALERT</button><button data-scenario="solar" class="scenario">LOW SOLAR</button></div><div class="sliders"><label>ความชื้นขาเข้า <strong id="input-moisture-value">24%</strong><input type="range" id="input-moisture" min="16" max="32" step="1" value="24"></label><label>ความชื้นเป้าหมาย <strong id="target-moisture-value">14%</strong><input type="range" id="target-moisture" min="11" max="17" step="1" value="14"></label><label>ปริมาณป้อนข้าว <strong id="feed-value">2.8 t/h</strong><input type="range" id="feed" min="0.5" max="5" step="0.1" value="2.8"></label><label>แสงแดดจำลอง <strong id="solar-factor-value">72%</strong><input type="range" id="solar-factor" min="0" max="100" step="1" value="72"></label></div><p class="simulation-disclaimer">ตัวเลขความร้อน/เชื้อเพลิง/ไฟฟ้าเป็นสมมติฐานสาธิต ไม่ใช่ข้อมูล PLC หรือสมรรถนะรับรองของเครื่องจริง</p></section>
+          <section class="panel energy-panel"><div class="panel-header"><div><p class="micro-head">SIMULATED PROCESS OUTPUT</p><h3>Live Calculation</h3></div><span class="live-dot"></span></div><div id="simulation-results" class="simulation-results"></div><div class="energy-mix"><span>Solar self-use</span><span id="solar-share-label">--</span><div class="energy-track"><div id="solar-fill"></div></div><span class="energy-foot" id="simulation-warning">Model assumption</span></div></section>
+          <section class="panel alert-panel"><div class="panel-header"><div><p class="micro-head">CONDITION MONITORING</p><h3>Signals & Actions</h3></div><span class="panel-metric" id="signal-count">03</span></div><div id="signals-list" class="signals-list"></div><button class="text-button" id="signals-create-wo">CREATE MAINTENANCE WORK ORDER ↗</button></section>
+        </div>
+      </section>
+
+      <section class="view" id="view-maintenance" aria-label="Ditto Maintenance Command Center">
+        <div class="section-bar"><div><p class="micro-head">03 / NATIONWIDE SERVICE ORCHESTRATION</p><h2><span class="accent">DITTO</span> Maintenance Command Center <span class="title-muted">/ 300 sites</span></h2></div><div class="section-actions"><span class="state-note">● DISPATCH WORKFLOW · DEMO</span><button class="button button-primary" id="create-wo-button">+ CREATE WORK ORDER</button></div></div>
+        <div class="kpi-grid" id="maintenance-kpis"></div>
+        <div class="maintenance-grid"><section class="panel service-map-panel"><div class="panel-header"><div><p class="micro-head">SERVICE OPERATING MODEL</p><h3>Regional Dispatch Network</h3></div><span class="ai-chip">6 DEMO ZONES</span></div><div class="dispatch-hero"><div class="dispatch-rings"><span class="ring-a"></span><span class="ring-b"></span><span class="ring-core">✳<small>DITTO<br>SERVICE</small></span></div><div><h4>One Service Brain.<br><em>Nationwide Execution.</em></h4><p>จับคู่ใบงานตามพื้นที่และประเภทเครื่อง ติดตามงานตั้งแต่แจ้งปัญหา → มอบหมาย → ปฏิบัติงาน → ปิดงาน</p></div></div><div class="dispatch-steps"><span>01 / DETECT</span><i>→</i><span>02 / TRIAGE</span><i>→</i><span>03 / DISPATCH</span><i>→</i><span>04 / RESOLVE</span></div><div id="service-zones" class="service-zones"></div><p class="small-disclaimer">ทีมช่าง จำนวนทีม และการจับคู่ภูมิภาคบนหน้านี้เป็นชุดข้อมูลตัวอย่าง รอทะเบียนช่าง/พื้นที่บริการ/SLA ที่ Ditto อนุมัติ</p></section><section class="panel triage-panel"><div class="panel-header"><div><p class="micro-head">SMART TRIAGE / RULES DEMO</p><h3>Risk Priority Queue</h3></div><span class="live-dot"></span></div><div id="triage-list" class="triage-list"></div><div class="triage-banner"><span>✦</span><div><b>AI-READY MAINTENANCE</b><small>เตรียมต่อข้อมูล vibration, temperature, motor current, run hours และคู่มือ OEM เพื่อคาดการณ์ความเสียหาย</small></div></div></section></div>
+        <section class="panel workorders-panel"><div class="panel-header"><div><p class="micro-head">CASE MANAGEMENT / LOCAL DEMO</p><h3>Work Orders <span class="title-muted" id="order-count"></span></h3></div><div class="section-actions"><select id="workorder-filter" class="select-dark"><option value="all">ALL STATUS</option><option value="new">รับแจ้ง</option><option value="assigned">มอบหมาย</option><option value="in_progress">กำลังซ่อม</option><option value="done">ปิดงาน</option></select><button class="button button-outline" id="export-workorders">↓ EXPORT CSV</button></div></div><div class="table-scroll"><table class="data-table"><thead><tr><th>WORK ORDER</th><th>PROJECT / LOCATION</th><th>ASSET</th><th>PRIORITY</th><th>TEAM</th><th>WORKFLOW</th><th>ACTION</th></tr></thead><tbody id="orders-table"></tbody></table></div><div class="table-footer">Demo work orders saved only in this browser (localStorage). ไม่มีการส่งแจ้งซ่อมจริงไป Ditto</div></section>
+      </section>
+
+      <section class="view" id="view-insights" aria-label="Intelligence & Architecture">
+        <div class="section-bar"><div><p class="micro-head">04 / DATA × ENGINEERING × SERVICE</p><h2>Fleet Intelligence <span class="title-muted">/ The next operating system for rice</span></h2></div><div class="section-actions"><button class="button button-outline" id="insights-open-site">EXPLORE STANDARD PLANT ↗</button></div></div>
+        <div class="insight-top-grid"><section class="panel value-panel"><p class="micro-head">PROGRAM NOMINAL EQUIPMENT CAPEX</p><h3>฿3.54 <span>billion</span></h3><p>300 โครงการ × 11.8 ล้านบาทต่อโครงการ จากรายการเครื่องจักรและ Solar ที่ได้รับ <strong>เป็นการคูณประมาณการ ไม่ใช่มูลค่าสัญญาที่ยืนยัน</strong></p><div class="budget-bar" id="budget-bar"></div><div id="budget-legend" class="budget-legend"></div></section><section class="panel data-pyramid-panel"><p class="micro-head">DIGITAL THREAD / ASSET HIERARCHY</p><h3>From country to sensor.</h3><div class="architecture-stack"><div class="arch-level level-1">NATIONAL FLEET <strong>300 SITES</strong></div><div class="arch-line"></div><div class="arch-level level-2">REGIONAL SERVICE <strong>6 ZONES · DEMO</strong></div><div class="arch-line"></div><div class="arch-level level-3">PLANT DIGITAL TWIN <strong>8 ASSET TYPES</strong></div><div class="arch-line"></div><div class="arch-level level-4">PLC / IoT / HISTORIAN <strong>TO BE CONNECTED</strong></div></div></section></div>
+        <div class="insight-cards"><section class="panel insight-card"><span class="concept-index">01 / OPERATIONS</span><div class="concept-symbol">◈</div><h3>Fleet Benchmark Engine</h3><p>เทียบความชื้นที่เข้า-ออก, เวลาอบ, Yield, downtime, solar share และค่าใช้จ่ายต่อ 1 ตันข้าวในแต่ละจังหวัด</p><span class="concept-state">PHASE 2 · NEEDS VERIFIED DATA</span></section><section class="panel insight-card"><span class="concept-index">02 / PREDICTIVE</span><div class="concept-symbol">⌁</div><h3>Predict Before Breakdown</h3><p>Health score จาก vibration, temperature, current, runtime และประวัติงานซ่อม พร้อมโมเดลแนะนำอะไหล่ล่วงหน้า</p><span class="concept-state">PHASE 2 · SENSOR + CMMS DATA</span></section><section class="panel insight-card"><span class="concept-index">03 / FIELD FORCE</span><div class="concept-symbol">✳</div><h3>Ditto Field Service OS</h3><p>ช่างเปิด QR ที่เครื่อง เห็น Twin, คู่มือ, ประวัติ, checklist, หลักฐานภาพ, อะไหล่ และปิดใบงานจากมือถือ</p><span class="concept-state">PHASE 2 · DITTO INTEGRATION</span></section><section class="panel insight-card"><span class="concept-index">04 / AI × KNOWLEDGE</span><div class="concept-symbol">✦</div><h3>Rice Operations Copilot</h3><p>สอบถามเหตุขัดข้องแบบอ้างอิงข้อมูลเครื่องและ SOP; ให้คำแนะนำซ่อมโดยมีมนุษย์อนุมัติ ไม่สั่ง PLC เอง</p><span class="concept-state">PHASE 2 · RAG + HUMAN APPROVAL</span></section></div>
+        <section class="panel readiness-panel"><div><p class="micro-head">REAL-WORLD COMMISSIONING</p><h3>Ready for 300 sites when these foundations are verified.</h3></div><div class="readiness-list"><span>Site master + GPS</span><span>PLC / OPC UA / Modbus mapping</span><span>Calibration + sensor contracts</span><span>Ditto SLA / technician registry</span><span>Cybersecurity & edge offline</span><span>OEM manuals / spare parts</span></div></section>
+        <section class="panel reference-panel" id="source-evidence"><div class="panel-header"><div><p class="micro-head">SOURCE TRACEABILITY</p><h3>Original plant concept & supplied budget</h3></div><span class="ai-chip">USER-PROVIDED REFERENCE</span></div><div class="reference-grid"><figure><img src="./assets/plant-reference.jpg" loading="lazy" alt="ภาพต้นแบบโรงงาน 3D ขนาด 15 × 10 เมตร พร้อมหมายเลขเครื่องจักร 1–7"><figcaption>01 · Original 15 × 10 m plant concept / 3D twin is approximate</figcaption></figure><figure><img src="./assets/equipment-budget.jpg" loading="lazy" alt="ตารางงบประมาณอุปกรณ์โรงงานรวม 11.8 ล้านบาท"><figcaption>02 · 8 categories / THB 11,800,000 per standard plant</figcaption></figure></div></section>
+      </section>
+    </main>
+    <footer class="site-footer"><span>RICE ATLAS • DIGITAL TWIN / PROTOTYPE 01</span><span>All plant telemetry, geospatial locations, health scores and service data shown are synthetic. No machine control is enabled.</span><span>BUILD FOR SCALE / 300</span></footer>
+  </div>
+
+  <aside class="copilot" id="copilot" aria-label="Operations Copilot" aria-hidden="true"><div class="copilot-head"><div><p class="micro-head">EXPLAINABLE OPS INTELLIGENCE</p><h3><span class="accent">✦</span> ATLAS COPILOT</h3></div><button class="icon-close" id="close-copilot" aria-label="ปิด">×</button></div><div class="copilot-body"><span class="ai-chip">RULE-BASED DEMO / NOT A LIVE LLM</span><div class="copilot-hero"><span class="copilot-avatar">✦</span><p>ยินดีต้อนรับสู่ศูนย์สั่งการ RICE ATLAS<br><b>อยากให้ตรวจอะไรเป็นอันดับแรก?</b></p></div><div class="copilot-prompts"><button data-question="fleet">วิเคราะห์ความเสี่ยงจาก 300 ไซต์ ↗</button><button data-question="energy">ถ้าข้าวชื้น 28% ต้องใช้อะไรเพิ่ม? ↗</button><button data-question="service">จัดลำดับงานซ่อมให้ Ditto ↗</button></div><div class="copilot-answer" id="copilot-answer">กดหัวข้อด้านบนเพื่อดูการวิเคราะห์จากกฎและสมมติฐานของโมเดล</div></div><div class="copilot-foot">AI ที่เชื่อมต่อข้อมูลจริงและคู่มือ OEM เป็นงานระยะถัดไป · ทุกคำแนะนำต้องผ่านช่างหรือผู้ปฏิบัติงาน</div></aside><div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+
+  <dialog class="wo-modal" id="wo-modal"><form method="dialog" id="wo-form"><div class="modal-head"><div><p class="micro-head">DITTO SERVICE HUB / DEMO</p><h3>New Maintenance Work Order</h3></div><button class="icon-close" type="button" id="close-wo-modal" aria-label="ปิด">×</button></div><label>โครงการ<select id="wo-site" required></select></label><div class="modal-field-row"><label>เครื่องจักร<select id="wo-asset" required></select></label><label>ระดับความสำคัญ<select id="wo-priority"><option value="medium">P2 · Normal</option><option value="high">P1 · Urgent</option><option value="low">P3 · Planned</option></select></label></div><label>รายละเอียดอาการ<textarea id="wo-description" rows="3" placeholder="เช่น อุณหภูมิสูงกว่า setpoint / motor vibration สูง..."></textarea></label><p class="modal-note">ข้อมูลนี้จะเก็บในเบราว์เซอร์ของคุณเท่านั้น ไม่มีการส่งงานไปทีม Ditto จริง</p><div class="modal-actions"><button type="button" class="button button-outline" id="cancel-wo">CANCEL</button><button type="submit" class="button button-primary">CREATE DEMO WORK ORDER</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
