@@ -2,6 +2,7 @@ import { ASSETS, REGIONS, DEMO_SITES, DEMO_TEAMS, CAPEX_PER_SITE, NATIONAL_NOMIN
   getFleetStats, calculateDrying, makeWorkOrder, advanceWorkOrder, seedWorkOrders, WORKFLOW_LABELS } from './model.mjs';
 import { PlantScene } from './scene.js';
 import { PROVINCE_MAP, projectLocation, provinceSvgPath, generateMapPositions } from './map-geo.mjs';
+import { attachMapViewport } from './map-viewport.mjs';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -323,6 +324,11 @@ function init(){
   $$('.copilot-prompts button').forEach(el=>el.addEventListener('click',()=>answerQuestion(el.dataset.question)));
   const tickClock=()=>{$('#live-clock').textContent=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date())};
   tickClock();setInterval(tickClock,1000);
+  const mapSvg=$('#thailand-map');
+  mapSvg.setAttribute('tabindex','0');
+  attachMapViewport(mapSvg,{
+    zoomIn:$('#map-zoom-in'),zoomOut:$('#map-zoom-out'),reset:$('#map-zoom-reset'),label:$('#map-zoom-label')
+  });
   renderFleet();renderInsights();
   console.info('RICE ATLAS Prototype · synthetic telemetry and sites · no PLC control or live Ditto dispatch');
 }

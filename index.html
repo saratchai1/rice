@@ -7,6 +7,7 @@
   <meta name="description" content="RICE ATLAS — Digital Twin / National Fleet / Ditto Maintenance Command Center. Interactive demo using synthetic telemetry and sites.">
   <title>RICE ATLAS — National Digital Twin</title>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./src/map-controls.css">
 </head>
 <body>
   <div class="screen-noise" aria-hidden="true"></div>
@@ -47,6 +48,12 @@
           <section class="panel map-panel">
             <div class="panel-header"><div><p class="micro-head">GEOGRAPHIC INTELLIGENCE / DEMO SCHEMATIC</p><h3>Thailand Operations Map</h3></div><div class="map-legend"><span><i class="key good"></i> Normal</span><span><i class="key warn"></i> Attention</span><span><i class="key bad"></i> Critical</span></div></div>
             <div class="map-stage">
+              <div class="map-zoom-controls" role="group" aria-label="ควบคุมการซูมแผนที่ประเทศไทย">
+                <button id="map-zoom-in" type="button" aria-label="ซูมเข้า" title="ซูมเข้า">+</button>
+                <button id="map-zoom-out" type="button" aria-label="ซูมออก" title="ซูมออก">−</button>
+                <button id="map-zoom-reset" type="button" aria-label="ดูประเทศไทยทั้งประเทศ" title="กลับมุมมองทั้งประเทศ">⌖</button>
+                <span id="map-zoom-label" aria-live="polite">100%</span>
+              </div>
               <div class="map-coordinates">18° 47′ N<br>98° 59′ E<br><span>REGIONAL SCHEMATIC</span></div>
               <svg id="thailand-map" viewBox="0 0 580 525" role="img" aria-label="ภาพแผนผังภูมิภาคประเทศไทยและจุดโครงการจำลอง 300 แห่ง">
                 <defs>

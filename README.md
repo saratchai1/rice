@@ -28,6 +28,8 @@ Or serve the project directory with any static web server. Uses a vendored MIT-l
 
 The former hand-drawn silhouette and radial regional-marker jitter have been replaced by 77 simplified Thai province polygons. All 300 display markers are generated and tested to lie inside their assigned province polygon; SVG clipping prevents marker circles from rendering beyond the national land outline. Region filters still work. The map is illustrative in its location data: no point indicates the precise location of an installed plant.
 
+Map controls: **+ / −** zoom in and out (up to 8×); **⌖** resets the full Thailand view. You can also scroll or use a trackpad to zoom at the cursor, drag the map to pan once zoomed, pinch with two fingers on touch devices, or focus the map and use `+`, `-`, `0`, and arrow keys. Panning and zooming are constrained to the same accurate Thai province SVG geometry; no separate image overlay can drift away from the pins.
+
 Dataset attribution and reuse caveats: [GEODATA_LICENSE.md](GEODATA_LICENSE.md). The geometry is a simplified reference layer, not an authoritative demarcation for legal, engineering or cadastral decisions.
 
 ### Plant model from supplied reference (15 × 10 m)
